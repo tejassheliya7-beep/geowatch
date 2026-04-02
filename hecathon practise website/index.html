@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoWatch – AI Powered Satellite Change Detection System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Leaflet Draw Plugin -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <!-- Leaflet Geocoder (Search) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo">
+            <i data-lucide="satellite"></i> GEOWATCH
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#how-it-works">Process</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <img src="C:\Users\PREMIUM\.gemini\antigravity\brain\ee6b2a81-fe76-45ca-8174-832857a162cc\hero_satellite_bg_1775060572608.png" alt="Satellite background" class="hero-bg">
+        
+        <div class="hero-content reveal">
+            <h1>Monitor Land Changes with AI & Satellite Intelligence</h1>
+            <p>GeoWatch helps authorities detect illegal construction, deforestation, and environmental changes automatically across Ahmedabad and Gandhinagar.</p>
+            <a href="#about" class="btn-primary">Explore Project</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="reveal">
+        <h2 class="section-title">The <span>Vision</span></h2>
+        <div class="about-grid">
+            <div class="about-text">
+                <h3>Solving Urban Tracking Challenges</h3>
+                <p>Tracking land use changes manually in rapidly growing cities like Ahmedabad and Gandhinagar is nearly impossible. Current methods are slow, labor-intensive, and prone to error.</p>
+                <div class="highlight-box">
+                    <p>GeoWatch uses state-of-the-art AI combined with High-Res Satellite Data from Sentinel-2 & Google Earth Engine to automate change detection in real-time.</p>
+                </div>
+            </div>
+            <div class="about-stats">
+                <i data-lucide="shield-check" style="width: 100px; height: 100px; color: var(--primary); opacity: 0.2; position: absolute; right: 10%; margin-top: -50px;"></i>
+                <p>Ensuring <strong>Smart Governance</strong> and <strong>Environmental Protection</strong> through automated urban planning compliance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live AI Detector Dashboard -->
+    <section id="how-it-works" class="reveal">
+        <h2 class="section-title">Live AI <span>Dashboard</span></h2>
+        
+        <div style="display: grid; grid-template-columns: 2.5fr 1fr; gap: 2rem; background: var(--bg-dark); padding: 1.5rem; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden;">
+            
+            <!-- Map Container -->
+            <div style="position: relative; height: 600px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div id="map" style="width: 100%; height: 100%; z-index: 10;"></div>
+                <div id="map-overlay-status" style="position: absolute; top: 1rem; left: 1rem; background: var(--glass); backdrop-filter: blur(5px); padding: 0.5rem 1rem; border-radius: 50px; z-index: 1000; border: 1px solid var(--primary); font-size: 0.8rem; display: none;">
+                    <span id="status-text">Analysis in progress...</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Control & Logs -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Control Panel -->
+                <div class="highlight-box" style="padding: 1.5rem;">
+                    <h4 style="color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="settings-2"></i> Controls
+                    </h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">Draw a polygon on the map to begin change detection analysis.</p>
+                    
+                    <!-- Date Selection -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Baseline Month</label>
+                            <input type="month" id="baseline-month" value="2022-01" min="2015-01" max="2026-12" 
+                                style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 0.6rem; font-size: 0.8rem;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Comparison Month</label>
+                            <input type="month" id="comparison-month" value="2024-01" min="2015-01" max="2026-12" 
+                                style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 0.6rem; font-size: 0.8rem;">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+                        <input type="text" id="area-name-input" placeholder="Enter Zone Name (e.g. Sector 5)" 
+                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem; border-radius: 10px; color: white; font-family: inherit;">
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <button id="btn-run-analysis" class="btn-primary" style="width: 100%; border: none; cursor: pointer; padding: 0.8rem;" disabled>
+                            Start AI Analysis
+                        </button>
+                        <div id="report-actions" style="display: none; flex-direction: column; gap: 1rem;">
+                            <button id="btn-preview-report" style="width: 100%; background: var(--secondary); color: #fff; padding: 0.8rem; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;">
+                                Preview Report
+                            </button>
+                            <a id="btn-download-report" href="#" style="width: 100%; background: #fff; color: #000; text-align: center; text-decoration: none; padding: 0.8rem; border-radius: 50px; font-weight: 700;">
+                                Download PDF Report
+                            </a>
+                        </div>
+                        <button id="btn-reset-map" style="width: 100%; border: 1px solid rgba(255, 255, 255, 0.1); background: transparent; color: #fff; padding: 0.8rem; border-radius: 50px; cursor: pointer;">
+                            Reset Map
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analysis Logs -->
+                <div class="highlight-box" style="padding: 1.5rem; flex: 1; background: #020617;">
+                    <h4 style="color: var(--primary); margin-bottom: 1rem; font-size: 0.9rem;">Analysis Engine Logs</h4>
+                    <div id="api-logs" style="font-family: 'Courier New', Courier, monospace; font-size: 0.75rem; color: #22c55e; height: 250px; overflow-y: auto; line-height: 1.5;">
+                        <div style="opacity: 0.6;">> System Ready. Awaiting input...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mockup Section -->
+    <div class="mockup-section reveal">
+        <div class="mockup-image">
+            <img src="C:\Users\PREMIUM\.gemini\antigravity\brain\ee6b2a81-fe76-45ca-8174-832857a162cc\change_detection_mockup_1775060653763.png" alt="AI Change Detection Mockup">
+        </div>
+        <div class="mockup-content">
+            <h2 style="color: var(--primary); margin-bottom: 2rem;">Real-time AI Detection</h2>
+            <div style="margin-bottom: 2rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 20px; height: 20px; background: #ef4444; border-radius: 4px;"></div>
+                    <span>Illegal Construction Detected</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 20px; height: 20px; background: #10b981; border-radius: 4px;"></div>
+                    <span>Authorized Development</span>
+                </div>
+            </div>
+            <p style="color: var(--text-muted);">Our triple-validation system (ML + DL + Indexing) ensures 95%+ accuracy in identifying violations.</p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="reveal">
+        <h2 class="section-title">Key <span>Features</span></h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <i data-lucide="zap"></i>
+                <h4>AI-based Change Detection</h4>
+                <p>Powered by ChangeFormer transformer models.</p>
+            </div>
+            <div class="feature-item">
+                <i data-lucide="refresh-cw"></i>
+                <h4>Automatic Grid Processing</h4>
+                <p>Massive area analysis via smart tiling.</p>
+            </div>
+            <div class="feature-item">
+                <i data-lucide="radio"></i>
+                <h4>Real-time Monitoring</h4>
+                <p>Instant alerts on new satellite passes.</p>
+            </div>
+            <div class="feature-item">
+                <i data-lucide="bell"></i>
+                <h4>Violation Alerts</h4>
+                <p>Color-coded severity for easy monitoring.</p>
+            </div>
+            <div class="feature-item">
+                <i data-lucide="file-text"></i>
+                <h4>PDF Report Generation</h4>
+                <p>Legal-ready documentation in seconds.</p>
+            </div>
+            <div class="feature-item">
+                <i data-lucide="database"></i>
+                <h4>Sentinel-2 Integration</h4>
+                <p>Seamless data flow from GEE.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Change Types -->
+    <section class="reveal" style="background: var(--bg-dark); border-radius: 50px; margin: 4rem 10%;">
+        <h2 class="section-title">Change Types <span>Detected</span></h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center;">
+            <div style="padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;">
+                <i data-lucide="home" style="color: var(--primary); font-size: 2rem;"></i>
+                <h4 style="margin-top: 1rem;">Illegal Construction</h4>
+            </div>
+            <div style="padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;">
+                <i data-lucide="tree-pine" style="color: #22c55e; font-size: 2rem;"></i>
+                <h4 style="margin-top: 1rem;">Deforestation</h4>
+            </div>
+            <div style="padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;">
+                <i data-lucide="waves" style="color: #3b82f6; font-size: 2rem;"></i>
+                <h4 style="margin-top: 1rem;">Water Body Loss</h4>
+            </div>
+            <div style="padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;">
+                <i data-lucide="route" style="color: #f59e0b; font-size: 2rem;"></i>
+                <h4 style="margin-top: 1rem;">Road Expansion</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="reveal">
+        <h2 class="section-title">Technology <span>Stack</span></h2>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 3rem;">
+            <div style="text-align: center;">
+                <div style="padding: 1.5rem; background: #fff; border-radius: 12px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                   <i data-lucide="brain" style="color: #000; width: 40px; height: 40px;"></i>
+                </div>
+                <p>PyTorch / AI</p>
+            </div>
+            <div style="text-align: center;">
+                <div style="padding: 1.5rem; background: #fff; border-radius: 12px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                   <i data-lucide="globe" style="color: #000; width: 40px; height: 40px;"></i>
+                </div>
+                <p>GeoPandas</p>
+            </div>
+            <div style="text-align: center;">
+                <div style="padding: 1.5rem; background: #fff; border-radius: 12px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                   <i data-lucide="mountain" style="color: #000; width: 40px; height: 40px;"></i>
+                </div>
+                <p>GEE / Sentinel</p>
+            </div>
+            <div style="text-align: center;">
+                <div style="padding: 1.5rem; background: #fff; border-radius: 12px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                   <i data-lucide="server" style="color: #000; width: 40px; height: 40px;"></i>
+                </div>
+                <p>FastAPI Backend</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Uniqueness & Feasibility -->
+    <section id="uniqueness" class="reveal">
+        <h2 class="section-title">Why <span>GeoWatch?</span></h2>
+        <div class="about-grid">
+            <div class="highlight-box">
+                <h4 style="color: var(--primary); margin-bottom: 1rem;">Unique Advantage</h4>
+                <ul style="list-style: none; color: var(--text-muted);">
+                    <li style="margin-bottom: 0.5rem;"><i data-lucide="check-circle" style="width: 14px; vertical-align: middle; color: var(--primary)"></i> No GIS Knowledge Required</li>
+                    <li style="margin-bottom: 0.5rem;"><i data-lucide="check-circle" style="width: 14px; vertical-align: middle; color: var(--primary)"></i> AUDA Zoning Compliance</li>
+                    <li style="margin-bottom: 0.5rem;"><i data-lucide="check-circle" style="width: 14px; vertical-align: middle; color: var(--primary)"></i> Triple Validation System</li>
+                </ul>
+            </div>
+            <div class="highlight-box">
+                <h4 style="color: var(--primary); margin-bottom: 1rem;">High Feasibility</h4>
+                <ul style="list-style: none; color: var(--text-muted);">
+                    <li style="margin-bottom: 0.5rem;"><i data-lucide="check-circle" style="width: 14px; vertical-align: middle; color: var(--primary)"></i> Free Sentinel-2 Data</li>
+                    <li style="margin-bottom: 0.5rem;"><i data-lucide="check-circle" style="width: 14px; vertical-align: middle; color: var(--primary)"></i> Scalable Open-Source Tools</li>
+                    <li style="margin-bottom: 0.5rem;"><i data-lucide="check-circle" style="width: 14px; vertical-align: middle; color: var(--primary)"></i> Pre-trained Reliable Models</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="reveal">
+        <h2 class="section-title">Our <span>Team</span></h2>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">TS</div>
+                <h4>Tejas Sheliya</h4>
+                <p style="color: var(--primary)">Team Leader / Frontend</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">ZV</div>
+                <h4>Zeel Vaghasiya</h4>
+                <p style="color: var(--primary)">Logic & Flow Design</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">JK</div>
+                <h4>Jay Kevadiya</h4>
+                <p style="color: var(--primary)">Backend Developer</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">DG</div>
+                <h4>Dev Goti</h4>
+                <p style="color: var(--primary)">Documentation</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="reveal">
+        <h2 class="section-title">Get in <span>Touch</span></h2>
+        <div class="contact-container">
+            <form id="contactForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea rows="5" placeholder="How can GeoWatch help you?"></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; border: none; cursor: pointer;">Send Message</button>
+            </form>
+            <div id="formStatus" style="margin-top: 1rem; text-align: center; color: var(--primary); display: none;">
+                Message sent successfully! Our team will contact you soon.
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-tagline">Smart Monitoring. Better Governance.</p>
+        <p>&copy; 2026 GeoWatch AI. All rights reserved.</p>
+        <div class="footer-social">
+            <a href="#"><i data-lucide="github"></i></a>
+            <a href="#"><i data-lucide="linkedin"></i></a>
+            <a href="#"><i data-lucide="twitter"></i></a>
+        </div>
+    </footer>
+
+    <!-- PDF Preview Modal -->
+    <div id="preview-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h4 style="color: var(--primary);">Report Preview</h4>
+                <button class="btn-close" id="modal-close">Close Preview</button>
+            </div>
+            <iframe id="preview-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
